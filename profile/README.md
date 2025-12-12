@@ -1,7 +1,6 @@
 <div align="center">
 
-# 🚔 DeepTracer
-### On-prem Blackbox Video Forensic AI
+<h1> <img alt="ChatGPT Image 2025년 12월 12일 오후 09_22_05" src="https://github.com/user-attachments/assets/18d3f2de-0d0d-4287-95d3-3414d63d4b4b" width="35" style="vertical-align: middle;"/> DeepTracer </h1>### On-prem Blackbox Video Forensic AI
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-TBD-lightgrey)]()
@@ -106,8 +105,8 @@ graph LR
 ### Phase 2: 멀티모달 분석 및 사용자 인터페이스 업데이트
 - [ ] **음성 인식(STT)**: 영상 내 음성 자동 추출 및 텍스트 변환
 - [ ] **GPS & 지도 연동**: 차량 이동 경로를 지도 위에 실시간 표시
-- [ ] **메타데이터 통합**: 외부 데이터(교통 정보, 사건 기록 등) 연계 분석
-- [ ] 
+- [ ] **메타데이터 통합**: 메타 데이터(교통 정보, 사건 기록 등) 추가 데이터와 연계 분석
+
 ### Phase 3: 인프라 & 성능 강화
 - [ ] 저해상도·야간 환경 인식률 개선 (Image Enhancement)
 - [ ] 모션블러 강건성 향상
