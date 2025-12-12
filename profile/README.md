@@ -1,6 +1,8 @@
 <div align="center">
 
-<h1> <img alt="ChatGPT Image 2025년 12월 12일 오후 09_22_05" src="https://github.com/user-attachments/assets/18d3f2de-0d0d-4287-95d3-3414d63d4b4b" width="35" style="vertical-align: middle;"/> DeepTracer </h1>### On-prem Blackbox Video Forensic AI
+<h1> <img alt="ChatGPT Image 2025년 12월 12일 오후 09_22_05" src="https://github.com/user-attachments/assets/18d3f2de-0d0d-4287-95d3-3414d63d4b4b" width="35" style="vertical-align: middle;"/> DeepTracer </h1>
+
+### On-prem Blackbox Video Forensic AI Tool & platform
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-TBD-lightgrey)]()
