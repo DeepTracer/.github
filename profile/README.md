@@ -99,11 +99,9 @@ graph LR
 ```
 
 ### 인프라 아키텍쳐
-> **⚠️ 현재 구현 진행 중 (WIP)**
->
-> 아래 내용은 구현 완료 후 업데이트될 예정입니다.
 
-<img width="5190" height="2293" alt="Group 26" src="https://github.com/user-attachments/assets/e48c550e-6448-445c-89c3-0b7df7b8a1fb" />
+<img width="2642" height="910" alt="architecture" src="https://github.com/user-attachments/assets/36c0da48-22e4-495e-93df-b6b4ca486d0b" />
+
 
 ---
 
