@@ -1,9 +1,12 @@
 <div align="center">
 
-<h1> <img alt="ChatGPT Image 2025년 12월 12일 오후 09_22_05" src="https://github.com/user-attachments/assets/18d3f2de-0d0d-4287-95d3-3414d63d4b4b" width="35" style="vertical-align: middle;"/> DeepTracer </h1>
+<h1> <img alt="ChatGPT Image 2025년 12월 12일 오후 09_22_05" src="https://github.com/user-attachments/assets/18d3f2de-0d0d-4287-95d3-3414d63d4b4b" width="35" style="vertical-align: middle;"/> DeepTracer </h1>
 
 ### On-prem Blackbox Video Forensic AI Tool & platform
 
+[![Java](https://img.shields.io/badge/Java-17-007396?logo=openjdk&logoColor=white)](https://openjdk.org/)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2-6DB33F?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-TBD-lightgrey)]()
 
@@ -32,6 +35,17 @@
 
 ---
 
+## 🗂 레포지토리 구성 (Repository Structure)
+
+| 디렉터리 | 설명 | 주요 스택 |
+| :--- | :--- | :--- |
+| `DeepTracer_BE` | 영상 분석 파이프라인 백엔드 API 서버 | Spring Boot, PostgreSQL, Redis, RabbitMQ, Elasticsearch |
+| `DeepTracer_FE` | 분석 결과 조회·검색 웹 대시보드 | React, TypeScript, Vite, TailwindCSS |
+| `DeepTracer_AI` | 차량/번호판 검출 및 OCR 추론 모듈 | YOLOv8, LPRNet, PyTorch |
+| `DeepTracer_APP` | 로컬 데스크톱 분석 애플리케이션 | Python |
+
+---
+
 ## 🏗 아키텍처 (Architecture)
 
 ### 시스템 파이프라인
@@ -44,6 +58,18 @@ graph LR
     D --> E[추적 및 스코어링]
     E --> F["JSON 출력 및<br/>웹 UI 시각화"]
 ```
+
+### 서비스 구성 (Backend ↔ Frontend)
+```mermaid
+graph LR
+    FE["DeepTracer_FE<br/>(React + Vite)"] -->|REST / JWT| BE["DeepTracer_BE<br/>(Spring Boot)"]
+    BE -->|영상 분석 작업 발행| MQ["RabbitMQ"]
+    MQ -->|결과 수신| BE
+    BE -->|메타데이터·사용자| PG[("PostgreSQL")]
+    BE -->|토큰 블랙리스트·캐싱| RD[("Redis")]
+    BE -->|결과·BBox·검색 색인| ES[("Elasticsearch")]
+```
+
 ### 인프라 아키텍쳐
 > **⚠️ 현재 구현 진행 중 (WIP)**
 >
@@ -55,35 +81,44 @@ graph LR
 
 ## 🛠 기술 스택 (Tech Stack)
 
-> **⚠️ 현재 구현 진행 중 (WIP)**
->
-> 아래 내용은 구현 완료 후 업데이트될 예정입니다.
-
 ### AI & ML
 ![YOLOv8](https://img.shields.io/badge/YOLOv8-FF33A1?logo=ultralytics&logoColor=white)
 ![LPRNet](https://img.shields.io/badge/LPRNet-Custom-blueviolet)
 ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?logo=pytorch&logoColor=white)
 
 ### Backend
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
-![Redis](https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=white)
+![Java](https://img.shields.io/badge/Java-17-007396?logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2-6DB33F?logo=springboot&logoColor=white)
+![Spring Security](https://img.shields.io/badge/Spring_Security-6DB33F?logo=springsecurity&logoColor=white)
+![JPA](https://img.shields.io/badge/Spring_Data_JPA-6DB33F?logo=spring&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?logo=jsonwebtokens&logoColor=white)
+![Gradle](https://img.shields.io/badge/Gradle-02303A?logo=gradle&logoColor=white)
+![Swagger](https://img.shields.io/badge/Swagger-85EA2D?logo=swagger&logoColor=black)
+
+> 도메인 중심(DDD) 패키지 구조(`auth`, `video`, `analysis`, `result`, `media`)로 구성되어 있으며,
+> JWT 기반 인증, RabbitMQ 기반 영상 분석 작업 큐, Elasticsearch 기반 결과 검색을 제공합니다.
 
 ### Frontend
-![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black)
+![React](https://img.shields.io/badge/React_19-61DAFB?logo=react&logoColor=black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-06B6D4?logo=tailwindcss&logoColor=white)
+![React Router](https://img.shields.io/badge/React_Router-CA4245?logo=reactrouter&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-5A29E4?logo=axios&logoColor=white)
 
-### Infrastructure (Local & Cloud)
-![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
-![Nginx](https://img.shields.io/badge/Nginx-009639?logo=nginx&logoColor=white)
-![GCP](https://img.shields.io/badge/Google_Cloud-4285F4?logo=google-cloud&logoColor=white)
-![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?logo=kubernetes&logoColor=white)
+> 대시보드·영상 상세·타임라인·검색·인증(로그인/회원가입) 화면을 제공하며, 다크 모드를 지원합니다.
 
-### Database & Monitoring
+### Message Queue & Search
+![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?logo=rabbitmq&logoColor=white)
+![Elasticsearch](https://img.shields.io/badge/Elasticsearch-005571?logo=elasticsearch&logoColor=white)
+
+### Database & Cache
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb&logoColor=white)
-![Grafana](https://img.shields.io/badge/Grafana-F46800?logo=grafana&logoColor=white)
-![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?logo=prometheus&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=white)
+
+### Infrastructure
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
+> **⚠️ Nginx / GCP / Kubernetes 등 배포 인프라는 구현 진행 중 (WIP)이며, 완료 후 업데이트될 예정입니다.**
 
 ---
 
@@ -118,58 +153,70 @@ graph LR
 
 ## 💻 설치 및 실행 (Installation & Usage)
 
-> **⚠️ 현재 구현 진행 중 (WIP)**
->
-> 아래 내용은 구현 완료 후 업데이트될 예정입니다.
----
 ### 요구사항 (Requirements)
-> **⚠️ 현재 구현 진행 중 (WIP)**
->
-> 아래 내용은 구현 완료 후 업데이트될 예정입니다.
 
-* Python 3.8+
-* GPU (NVIDIA CUDA 11.0+ 권장)
+* **Backend**: Java 17, Gradle
+* **Frontend**: Node.js 18+, npm
+* **AI**: Python 3.8+, GPU (NVIDIA CUDA 11.0+ 권장)
+* **Infra**: Docker / Docker Compose (PostgreSQL, Redis, RabbitMQ, Elasticsearch)
 * RAM: 8GB (최소) / 16GB (권장)
 * Storage: 5GB+ (모델 가중치 포함)
 
-### 기본 설치
+---
+
+### 1. 인프라 실행 (Docker)
+
+PostgreSQL, Redis, 메시지 큐(RabbitMQ), Elasticsearch를 컨테이너로 실행합니다.
+
 ```bash
-# 리포지토리 클론
-git clone [https://github.com/DeepTracer/DeepTracer.git](https://github.com/DeepTracer/DeepTracer.git)
-cd DeepTracer
+cd DeepTracer_BE
+docker-compose up -d
+```
+
+### 2. 백엔드 실행 (Spring Boot)
+
+```bash
+cd DeepTracer_BE
+
+# Gradle 빌드 및 실행
+./gradlew bootRun        # Linux / Mac
+# gradlew.bat bootRun    # Windows
+```
+
+* 기본 포트: `http://localhost:8080`
+* API 문서(Swagger UI): `http://localhost:8080/swagger-ui.html`
+
+### 3. 프론트엔드 실행 (React + Vite)
+
+```bash
+cd DeepTracer_FE
+
+# 의존성 설치
+npm install
+
+# 개발 서버 실행
+npm run dev
+```
+
+* 브라우저 접속: `http://localhost:5173`
+
+### 4. AI 추론 모듈 (선택)
+
+```bash
+cd DeepTracer_AI
 
 # 가상환경 생성 및 활성화
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
-# venv\Scripts\activate  # Windows
+# venv\Scripts\activate   # Windows
 
 # 의존성 설치
-pip install -r requirements.txt
-
-# 모델 가중치 다운로드
-python scripts/download_models.py
+pip install -r requirements/requirements.txt
 ```
-### 실행 방법 (Execution)
 
-**Local Development**
-```bash
-# 1. 백엔드 서버 실행
-python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000
+> **⚠️ 일부 실행 절차 및 모델 가중치 다운로드 방법은 구현 진행 중 (WIP)이며, 완료 후 업데이트될 예정입니다.**
 
-# 2. 프론트엔드 서버 실행 (새 터미널)
-cd frontend
-npm start
-```
-> **⚠️ 현재 구현 진행 중 (WIP)**
->
-> 아래 내용은 구현 완료 후 업데이트될 예정입니다.
-
-*브라우저 접속: http://localhost:3000*
-
-### Docker Environment
-```bash
-docker-compose up -d
-```
+---
 
 ## 👥 팀 (Team)
 
