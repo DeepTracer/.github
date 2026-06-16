@@ -21,7 +21,7 @@
 
 ## 📖 소개 (Introduction)
 
-**DeepTracer**는 수사 및 디지털 포렌식 업무의 효율성을 극대화하기 위해 개발되었습니다. YOLOv8 기반의 객체 검출과 LPRNet 기반의 번호판 인식을 결합하여, 특히 현재는 **한국형 번호판 환경에 최적화된 분석 성능**을 제공합니다.
+**DeepTracer**는 수사 및 디지털 포렌식 업무의 효율성을 극대화하기 위해 개발되었습니다. YOLOv8 기반의 객체 검출과 TRBA·PaddleOCR 기반의 번호판 인식(OCR)을 결합하여, 특히 현재는 **한국형 번호판 환경에 최적화된 분석 성능**을 제공합니다.
 
 보안이 중요한 수사 환경을 고려하여 외부 네트워크 연결 없이 작동 가능한 **온프레미스(On-premise)** 환경을 지원하며, 분석 결과는 데이터 계층화를 통해 보안이 보장된 상황에서 직관적인 온라인 웹 UI를 통해 누구나 쉽게 분석 결과를 확인할 수 있습니다.
 
@@ -41,7 +41,7 @@
 | :--- | :--- | :--- |
 | `DeepTracer_BE` | 영상 분석 파이프라인 백엔드 API 서버 | Spring Boot, PostgreSQL, Redis, RabbitMQ, Elasticsearch |
 | `DeepTracer_FE` | 분석 결과 조회·검색 웹 대시보드 | React, TypeScript, Vite, TailwindCSS |
-| `DeepTracer_AI` | 차량/번호판 검출 및 OCR 추론 모듈 | YOLOv8, LPRNet, PyTorch |
+| `DeepTracer_AI` | 차량/번호판 검출 및 OCR 추론 모듈 | YOLOv8, TRBA, PaddleOCR, PyTorch |
 | `DeepTracer_APP` | 로컬 데스크톱 분석 애플리케이션 | Python |
 
 ---
@@ -54,7 +54,7 @@
 graph LR
     A[영상 입력] --> B["전처리<br/>(Slicing/Enhancement)"]
     B --> C[YOLOv8 검출]
-    C --> D[LPRNet OCR]
+    C --> D["TRBA / PaddleOCR OCR"]
     D --> E[추적 및 스코어링]
     E --> F["JSON 출력 및<br/>웹 UI 시각화"]
 ```
@@ -70,6 +70,34 @@ graph LR
     BE -->|결과·BBox·검색 색인| ES[("Elasticsearch")]
 ```
 
+### Worker ↔ 서버 연동 (로컬 머신 구동)
+> 보안망 환경을 고려하여, GPU 추론을 수행하는 **AI 워커(`DeepTracer_APP` + `DeepTracer_AI`)는 수사관의 로컬 머신에서 직접 구동**됩니다.
+> 서버(`DeepTracer_BE`)는 메시지 큐(RabbitMQ)를 통해 분석 작업을 발행하고, 워커는 작업을 수신해 영상을 분석한 뒤 진행률·결과 이벤트를 큐로 다시 전송합니다.
+
+```mermaid
+graph LR
+    subgraph Local["🖥️ 로컬 머신 (수사관 PC)"]
+        APP["DeepTracer_APP<br/>(PyQt5 데스크톱 워커)"]
+        AI["DeepTracer_AI<br/>(YOLOv8 + TRBA/PaddleOCR)"]
+        APP --> AI
+    end
+
+    subgraph Server["☁️ 서버 (온프레미스 / 클라우드)"]
+        BE["DeepTracer_BE<br/>(Spring Boot)"]
+        MQ["RabbitMQ"]
+        PG[("PostgreSQL")]
+        ES[("Elasticsearch")]
+    end
+
+    BE -->|① 분석 작업 발행| MQ
+    MQ -->|② 작업 수신| APP
+    AI -->|③ 영상 분석 수행| APP
+    APP -->|④ 결과 이벤트<br/>START · SUCCESS · ERROR| MQ
+    MQ -->|⑤ 이벤트 소비| BE
+    BE -->|⑥ 상태 갱신·색인| PG
+    BE --> ES
+```
+
 ### 인프라 아키텍쳐
 > **⚠️ 현재 구현 진행 중 (WIP)**
 >
@@ -83,7 +111,8 @@ graph LR
 
 ### AI & ML
 ![YOLOv8](https://img.shields.io/badge/YOLOv8-FF33A1?logo=ultralytics&logoColor=white)
-![LPRNet](https://img.shields.io/badge/LPRNet-Custom-blueviolet)
+![TRBA](https://img.shields.io/badge/TRBA-OCR-blueviolet)
+![PaddleOCR](https://img.shields.io/badge/PaddleOCR-0062B0?logo=baidu&logoColor=white)
 ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?logo=pytorch&logoColor=white)
 
 ### Backend
@@ -127,7 +156,7 @@ graph LR
 * **번호판 검출 정확도 (Precision)**: **94.4%**
 * **번호판 검출 재현율 (Recall)**: **94.5%**
 * **번호판 인식 정확도 (Plate-level Accuracy)**: **91.58%**
-* **OCR 정확도 (LPRNet)**: **92.1% ~ 98.05%**
+* **OCR 정확도 (TRBA / PaddleOCR)**: **92.1% ~ 98.05%**
 * **평균 처리 속도**: 약 4~5 FPS (FHD 29.97fps 기준)
 
 ---
@@ -213,8 +242,6 @@ source venv/bin/activate  # Linux/Mac
 # 의존성 설치
 pip install -r requirements/requirements.txt
 ```
-
-> **⚠️ 일부 실행 절차 및 모델 가중치 다운로드 방법은 구현 진행 중 (WIP)이며, 완료 후 업데이트될 예정입니다.**
 
 ---
 
